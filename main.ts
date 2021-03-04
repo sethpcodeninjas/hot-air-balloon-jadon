@@ -2,8 +2,19 @@ namespace SpriteKind {
     export const Background = SpriteKind.create()
     export const Mountain = SpriteKind.create()
 }
+function spawnSomething (roll: number) {
+    if (roll <= 2) {
+    	createUFO()
+    } else if (roll <= 6) {
+    	createTree()
+    } else if (roll <= 18) {
+    	createCloud()
+    } else if (roll < 54) {
+    	createBird()
+    }
+}
 function createAnimationArrays () {
-    flyingSaucer = [img`
+    ufoFrames = [img`
         .........fff.........
         .......ff888ff.......
         ......f8888998f......
@@ -151,6 +162,42 @@ function createAnimationArrays () {
         . . . . . . . . . . . . . . . . 
         `]
 }
+function createUFO () {
+    if (Math.percentChance(50)) {
+        ufoSpeed = 40
+    } else {
+        ufoSpeed = -40
+    }
+    ufo = sprites.createProjectileFromSide(img`
+        .........fff.........
+        .......ff888ff.......
+        ......f8888998f......
+        .....f888888998f.....
+        ....f888a8a88998f....
+        ...ff88888888898ff...
+        ..fdddddddddddddddf..
+        .fbbbbbbbbbbbbbbbbbf.
+        fa9b9bb9bb9bb9bb9b9af
+        .facccccccccccccccaf.
+        ..faacccccccccccaaf..
+        ...ffaacccccccaaff...
+        .....fffffffffff.....
+        .....f999999999f.....
+        ......fffffffff......
+        `, ufoSpeed, 0)
+    animation.runImageAnimation(
+    ufo,
+    ufoFrames,
+    500,
+    true
+    )
+}
+function createBird () {
+	
+}
+function createCloud () {
+	
+}
 // arrayName[indexNumber]
 // How do you create a random index number?
 // randint(0, array.length - 1)
@@ -162,10 +209,15 @@ function placeMountain (leftPosition: number) {
     lastCreatedMountain.setFlag(SpriteFlag.AutoDestroy, true)
     lastCreatedMountain.setFlag(SpriteFlag.Ghost, true)
 }
-let lastCreatedMountain: Sprite = null
+function createTree () {
+	
+}
+let ufo: Sprite = null
 let birdGoingRight: Image[] = []
 let birdGoingLeft: Image[] = []
-let flyingSaucer: Image[] = []
+let ufoFrames: Image[] = []
+let ufoSpeed = 0
+let lastCreatedMountain: Sprite = null
 let mountains: Image[] = []
 let balloonDeflated = img`
     ...................
@@ -364,3 +416,40 @@ sun.z = -20
 sun.setFlag(SpriteFlag.Ghost, true)
 placeMountain(0)
 placeMountain(lastCreatedMountain.right)
+game.setDialogFrame(img`
+    ..ccccc....333.....333...ccccc...
+    .c33b33c..39993...39993.c33b33c..
+    c3b33bb3c39999933399999c3bb33b3c.
+    c33b33b3c99111999991119c3b33b33c.
+    cb33b33bc91999199919991cb33b33bc.
+    c3b33bbbcb999991119999bcbbb33b3c.
+    c3bb3bbd1b111119991111b1dbb3bb3c.
+    .c33bbd1b11111111111111b1dbb33c..
+    ..cccc1b1111111111111111b1cccc...
+    .3991bb111111111111111111bb993...
+    3991991111111111111111111191993..
+    39919911111111111111111111991993.
+    39919911111111111111111111991993.
+    .3991911111111111111111111991993.
+    ..39919111111111111111111191993..
+    ..3991911111111111111111191993...
+    ..3991911111111111111111191993...
+    .39919111111111111111111191993...
+    3991991111111111111111111191993..
+    39919911111111111111111111991993.
+    39919911111111111111111111991993.
+    .3991911111111111111111111991993.
+    ..699bb111111111111111111bb1993..
+    ..cccc1b1111111111111111b1cccc...
+    .c33bbd1b11111111111111b1dbb33c..
+    c3bb3bbd1b111199911111b1dbb3bb3c.
+    c3b33bbbcb999911199999bcbbb33b3c.
+    cb33b33bc19991999199919cb33b33bc.
+    c33b33b3c91119999911199c3b33b33c.
+    c3b33bb3c99999333999993c3bb33b3c.
+    .c33b33c.39993...39993..c33b33c..
+    ..ccccc...333.....333....ccccc...
+    .................................
+    `)
+game.showLongText("Stay in the air as long as you can. Press any button to turn on the burner and go up!", DialogLayout.Center)
+ufoSpeed = 0
