@@ -2,6 +2,9 @@ namespace SpriteKind {
     export const Background = SpriteKind.create()
     export const Mountain = SpriteKind.create()
 }
+game.onUpdateInterval(750, function() {
+    spawnSomething(randint(0, 100))
+})
 function spawnSomething (roll: number) {
     if (roll <= 2) {
         createUFO()
@@ -191,12 +194,63 @@ function createUFO () {
     500,
     true
     )
+    ufo.y = randint(10, scene.screenHeight() - 10)
 }
 function createBird () {
-	
+	if(Math.percentChance(50)){
+        birdSpeed = 20
+        chosenAnimation = birdGoingRight
+    }
+    else {
+        birdSpeed = -20
+        chosenAnimation = birdGoingLeft
+    }
+    let bird = sprites.createProjectileFromSide(chosenAnimation[0], birdSpeed, 0)
+    animation.runImageAnimation(bird, chosenAnimation, 100, true)
+    bird.y = randint(12, scene.screenHeight() - 10)
 }
 function createCloud () {
-	
+    cloudImages = [img`
+        ..................1111...............
+        ................11111111.............
+        ...............1111111111............
+        ..............11111111111....11111...
+        ..............111111111111.11111111..
+        .............11111111111111111111111.
+        ........11111111111111111111111111111
+        .......111111111111111111111111111111
+        1111111111111111111111111111111111111
+        .111111111111111111111111111111111111
+        .......111111111111111111111111111111
+        .......................1111111111111.
+        `, img`
+        . . . 1 1 1 1 . . . 1 1 . . . . . . . . 
+        . . 1 1 1 1 1 1 . 1 1 1 1 . . . . . . . 
+        . 1 1 1 1 1 1 1 1 1 1 1 1 1 . . . . . . 
+        . 1 1 1 1 1 1 1 1 1 1 1 1 1 . 1 1 . . . 
+        1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+        1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+        1 1 1 1 1 1 1 1 1 1 1 1 1 . . . . . . . 
+        `, img`
+        ............111111...........
+        ..........111111111..........
+        .........11111111111.........
+        ........1111111111111........
+        ........1111111111111........
+        ........11111111111111.......
+        ....111111111111111111111111.
+        ...11111111111111111111111111
+        ..111111111111111111111111111
+        ..111111111111111111111111111
+        11111111111111111111111111111
+        .11111111111111111111.1.1111.
+        1........11111111111.....11..
+        11111111111111...............
+        `]
+    cloud = sprites.createProjectileFromSide(cloudImages._pickRandom(), -5, 0)
+    cloud.z = -5
+    cloud.setFlag(SpriteFlag.Ghost, true)
+    cloud.y = randint(0, scene.screenHeight() * 0.6)
 }
 function placeMountain (leftPosition: number) {
     lastCreatedMountain = sprites.create(mountains[randint(0, mountains.length - 1)], SpriteKind.Mountain)
@@ -207,7 +261,7 @@ function placeMountain (leftPosition: number) {
     lastCreatedMountain.setFlag(SpriteFlag.Ghost, true)
 }
 function createTree () {
-    ufo = sprites.createProjectileFromSide(img`
+    tree = sprites.createProjectileFromSide(img`
         ...............cc...............
         ............ccc65c66............
         ............c6c55c76............
@@ -240,11 +294,19 @@ function createTree () {
         ..............fef...............
         ..............fef...............
         ...............f................
-        `, ufoSpeed, 0)
+        `, -10, 0)
+    tree.z = -5
+    tree.bottom = scene.screenHeight()
+    tree.setFlag(SpriteFlag.Ghost, true)
 }
+let tree: Sprite = null
+let cloud: Sprite = null
+let cloudImages: Image[] = []
+let chosenAnimation: Image[] = []
 let ufo: Sprite = null
 let birdGoingRight: Image[] = []
 let birdGoingLeft: Image[] = []
+let birdSpeed: number = null
 let ufoFrames: Image[] = []
 let ufoSpeed = 0
 let lastCreatedMountain: Sprite = null
